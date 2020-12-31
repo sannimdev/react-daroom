@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import CenterLayout from './CenterLayout';
 import { Room, Rooms } from '../lib/roomList';
 
 //styled-components 영역
@@ -69,7 +70,7 @@ function RoomItem({ room }: RoomItemProps) {
 function RoomList({ rooms }: Rooms) {
     if (!rooms) return null;
     return (
-        <div>
+        <CenterLayout>
             <Title>방 목록</Title>
             <GridLayout>
                 {rooms.map((room: Room) => {
@@ -80,7 +81,7 @@ function RoomList({ rooms }: Rooms) {
                     );
                 })}
             </GridLayout>
-        </div>
+        </CenterLayout>
     );
 }
 
