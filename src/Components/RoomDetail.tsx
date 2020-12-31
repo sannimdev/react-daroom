@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { RoomDetail as RoomDetailType } from '../lib/roomDetail';
+import Gallery, { GalleryI } from 'react-photo-gallery';
 import CenterLayout from './CenterLayout';
 import FullLayout from './FullLayout';
 import Gnb from './Gnb';
+import Carousel, { Modal, ModalGateway } from 'react-images';
 
 const getImageUrl = (photoId: string): string =>
     `https://d1774jszgerdmk.cloudfront.net/1024/${photoId}`;
@@ -99,6 +101,35 @@ function RoomDetail({ room: roomDetail }: Props) {
     const onRoomSizeClick = () => {
         setSquareMeter(!isSquareMeter);
     };
+    const photos = room.photos.map((photoId, idx) => ({
+        src: getImageUrl(photoId),
+        width: idx === 0 ? 10 : 2,
+        height: idx === 0 ? 10 : 3,
+        srcSet: undefined,
+        title: undefined,
+        source: {
+            download: '',
+            fullscreen: getImageUrl(photoId),
+            regular: getImageUrl(photoId),
+            thumbnail: getImageUrl(photoId),
+        },
+    }));
+    const GalleryRows = () => <Gallery photos={photos} onClick={openLightbox} />;
+
+    // react-image
+    const [currentImage, setCurrentImage] = useState(0);
+    const [viewerIsOpen, setViewerIsOpen] = useState(false);
+
+    const openLightbox = useCallback((event, { photo, index }) => {
+        setCurrentImage(index);
+        setViewerIsOpen(true);
+    }, []);
+
+    const closeLightbox = () => {
+        setCurrentImage(0);
+        setViewerIsOpen(false);
+    };
+
     return (
         <>
             <Gnb />
@@ -196,9 +227,21 @@ function RoomDetail({ room: roomDetail }: Props) {
                         <dd>{room.personal_maintenance_items_str.join(', ')}</dd>
                     </RoomOptions>
                     <div>
-                        {room.photos.map((photoId: string) => (
-                            <img src={getImageUrl(photoId)} />
-                        ))}
+                        <GalleryRows />
+                        <ModalGateway>
+                            {viewerIsOpen ? (
+                                <Modal onClose={closeLightbox}>
+                                    <Carousel
+                                        currentIndex={currentImage}
+                                        views={photos.map((x) => ({
+                                            ...x,
+                                            srcset: x.srcSet,
+                                            caption: x.title,
+                                        }))}
+                                    />
+                                </Modal>
+                            ) : null}
+                        </ModalGateway>
                     </div>
                 </RoomContent>
             </CenterLayout>
