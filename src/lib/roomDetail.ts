@@ -29,7 +29,7 @@ export type Agent = {
     is_awards: boolean;
     is_verify_agent_tel: boolean;
     emails: string[];
-    role_type: string;
+    role_type: string | null;
     agent_tel: string;
 };
 
@@ -60,13 +60,13 @@ export type Room = {
     location: number[];
     random_location: number[];
     shorten_url: string;
-    agent_id: string;
+    agent_id: string | null;
     division: boolean;
     duplex: boolean;
     full_option: boolean;
     complex_id: string | null;
     dong: string | null;
-    ho: string;
+    ho: string | null;
     contract_size: null;
     enter_date: string | null;
     saved_time_str: string;
@@ -118,8 +118,8 @@ export type Room = {
     full_jibun_address2_str: string | null; // '서울시 강남구 역삼동 00-0;
     full_road_address2_str: string | null; //'서울시 강남구 테헤란로 1번길 00-0';
     direction_str: string | null; // '남동';
-    parking_num: number; // 0;
-    parking_average: number; // 0;
+    parking_num: number | null; // 0;
+    parking_average: number | null; // 0;
     building_use_types_str: string[]; // ['단독주택'];
     building_approval_type_str: string | null; // '사용승인일';
     building_approval_date_str: string | null; // '1900.10.00';
@@ -143,20 +143,20 @@ type User = {
     active: boolean; // true;
     inquery_phone: null;
     phone: string; // '01000000000';
-    tel: string; // '02-0000-0000';
-    safe_phone: string; // '05000000000';
+    tel: string | null; // '02-0000-0000';
+    safe_phone: string | null; // '05000000000';
     yellow_id?: null;
     is_subscribe?: null;
     position?: null;
     profile_url: string; // 'https://링크';
     message: string; // '[매물번호:012030123] 이거 보고 연락드립니다. http://링크L';
-    role_type: string; // '대표공인중개사';
+    role_type: string | null; // '대표공인중개사';
 };
 
 export type RoomDetail = {
     is_messenger_sender_agented: boolean;
     ios_score_height: number;
-    agent: Agent;
+    agent: Agent | null;
     is_consultation_actived: boolean;
     is_consultation_receipted: boolean;
     detail_shop: {
@@ -168,7 +168,7 @@ export type RoomDetail = {
     room: Room;
     is_messenger_actived: boolean;
     score: null;
-    review: {
+    review?: {
         review_count_good: number;
         reviews: any[];
         review_count: number;
@@ -180,7 +180,7 @@ export type RoomDetail = {
         call_number: string;
         show_number: string;
     };
-    other_rooms: OtherRoom[];
+    other_rooms?: OtherRoom[];
     shinhanbank?: {
         deposit: number;
         location: number;
