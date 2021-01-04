@@ -67,6 +67,7 @@ const RoomOptions = styled.dl`
         width: 16.66%;
         height: 3rem;
         line-height: 3rem;
+        vertical-align: middle;
     }
 
     & > dt::before {
