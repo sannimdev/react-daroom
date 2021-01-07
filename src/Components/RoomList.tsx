@@ -2,14 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import CenterLayout from './CenterLayout';
 import { Room, Rooms } from '../lib/roomList';
+import Gnb from './Gnb';
 
 //styled-components 영역
-const Title = styled.h1`
-    font-size: 3rem;
-    text-align: center;
-    font-weight: bold;
-    margin: 2rem 0;
-`;
+// const Title = styled.h1`
+//     font-size: 3rem;
+//     text-align: center;
+//     font-weight: bold;
+//     margin: 2rem 0;
+// `;
 
 const GridLayout = styled.ul`
     display: grid;
@@ -18,36 +19,71 @@ const GridLayout = styled.ul`
     margin: 2rem 0;
 `;
 
-const GridItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    min-height: 350px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    box-shadow: rgba(222, 222, 222, 0.3) 0px 0px 1rem 1rem;
-`;
-
 const ItemTitle = styled.div`
-        padding: 10px;
-        text-align: center;
+    padding: 10px;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+
+    & > strong {
+        padding: 0 0.2rem;
+        letter-spacing: 0.005rem;
         font-size: 1.5rem;
-        font-weight: bold;
-        height: 2rem;
-        line-height: 2rem;
+        font-weight: 900;
+
+        &.monthlyPrice {
+        }
+
+        &.depositPrice {
+        }
     }
 `;
 
 const ItemContent = styled.div`
+    box-sizing: border-box;
+    width: 100%;
     padding: 10px;
-    margin: auto 0;
+    margin: 0 auto;
+
+    p {
+        width: 100%;
+        padding-top: 0.5rem;
+        min-height: 45px;
+        line-height: 1.6rem;
+        box-sizing: border-box;
+        border-top: 1px solid #f4f4f4;
+    }
 `;
 
 const Thumbnail = styled.div<{ src: string }>`
     background: url('${(props) => props.src}');
     width: 100%;
     height: 200px;
-    background-size: cover;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     background-position: center center;
+    background-size: 100%;
+    transition: background-size 0.2s ease-out;
+`;
+
+const GridItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 340px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    box-shadow: rgba(222, 222, 222, 0.3) 0px 0px 1rem 1rem;
+    transition: box-shadow 0.4s ease-out;
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: rgba(222, 222, 222, 1) 0px 0px 2rem 1rem;
+        border-color: #777;
+
+        ${Thumbnail} {
+            background-size: 120%;
+        }
+    }
 `;
 
 // 컴포넌트 영역
@@ -56,10 +92,14 @@ type RoomItemProps = {
 };
 function RoomItem({ room }: RoomItemProps) {
     const { title, img_url, price_title } = room;
+    const [deposit, monthly] = price_title.split('/') || '?/?';
     return (
         <GridItem>
-            <ItemTitle>{price_title || '가격정보 없음'}</ItemTitle>
             <Thumbnail src={img_url} />
+            <ItemTitle>
+                보증금 <strong className='depositPrice'>{deposit}</strong>
+                월세 <strong className='monthlyPrice'>{monthly}</strong>
+            </ItemTitle>
             <ItemContent>
                 <p>{title}</p>
             </ItemContent>
@@ -70,18 +110,20 @@ function RoomItem({ room }: RoomItemProps) {
 function RoomList({ rooms }: Rooms) {
     if (!rooms) return null;
     return (
-        <CenterLayout>
-            <Title>방 목록</Title>
-            <GridLayout>
-                {rooms.map((room: Room) => {
-                    return (
-                        <li key={room.id}>
-                            <RoomItem room={room} />
-                        </li>
-                    );
-                })}
-            </GridLayout>
-        </CenterLayout>
+        <>
+            <Gnb />
+            <CenterLayout>
+                <GridLayout>
+                    {rooms.map((room: Room) => {
+                        return (
+                            <li key={room.id}>
+                                <RoomItem room={room} />
+                            </li>
+                        );
+                    })}
+                </GridLayout>
+            </CenterLayout>
+        </>
     );
 }
 
