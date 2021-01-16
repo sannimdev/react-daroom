@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { RoomDetail as RoomDetailType } from '../lib/roomDetail';
-import Gallery, { GalleryI } from 'react-photo-gallery';
-import CenterLayout from './CenterLayout';
-import FullLayout from './FullLayout';
-import Gnb from './Gnb';
+import Gallery from 'react-photo-gallery';
 import Carousel, { Modal, ModalGateway } from 'react-images';
+import { RoomDetail as RoomDetailType } from '../lib/roomDetail';
+import Gnb from '../Components/Gnb';
+import CenterLayout from '../Components/CenterLayout';
+import RoomOptionFrame from '../Components/RoomOptionFrame';
 
 const getImageUrl = (photoId: string): string =>
     `https://d1774jszgerdmk.cloudfront.net/1024/${photoId}`;
@@ -56,7 +56,7 @@ const RoomContent = styled(RoomComponent)`
     }
 `;
 
-const RoomOptions = styled.dl`
+const Specification = styled.dl`
     width: 100%;
     border-top: 2px solid #000;
 
@@ -85,6 +85,19 @@ const RoomOptions = styled.dl`
     }
 `;
 
+const RoomContext = styled.div`
+    .room-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        margin-bottom: 20px;
+    }
+    .room-text {
+        font-size: 1.1rem;
+        line-height: 1.4rem;
+    }
+`;
+
 // ----
 
 type Props = {
@@ -99,9 +112,13 @@ function RoomDetail({ room: roomDetail }: Props) {
     const { room } = roomDetail;
     const sellingType = ['월세'];
     const [isSquareMeter, setSquareMeter] = useState(true);
-    const onRoomSizeClick = () => {
+    const [size, setSize] = useState(printRoomSize(true, room.room_size || 0));
+
+    const onRoomSizeClick = useCallback(() => {
         setSquareMeter(!isSquareMeter);
-    };
+        setSize(printRoomSize(isSquareMeter, room.room_size));
+    }, [isSquareMeter, room.room_size]);
+
     const photos = room.photos.map((photoId, idx) => ({
         src: getImageUrl(photoId),
         width: idx === 0 ? 10 : 2,
@@ -115,7 +132,6 @@ function RoomDetail({ room: roomDetail }: Props) {
             thumbnail: getImageUrl(photoId),
         },
     }));
-    const GalleryRows = () => <Gallery photos={photos} onClick={openLightbox} />;
 
     // react-image
     const [currentImage, setCurrentImage] = useState(0);
@@ -126,10 +142,10 @@ function RoomDetail({ room: roomDetail }: Props) {
         setViewerIsOpen(true);
     }, []);
 
-    const closeLightbox = () => {
+    const closeLightbox = useCallback(() => {
         setCurrentImage(0);
         setViewerIsOpen(false);
-    };
+    }, []);
 
     return (
         <>
@@ -152,9 +168,7 @@ function RoomDetail({ room: roomDetail }: Props) {
                             <SummaryCard>
                                 <h5 className='gray'>전용 면적</h5>
                                 <p>
-                                    <strong onClick={() => onRoomSizeClick()}>
-                                        {printRoomSize(isSquareMeter, room.room_size)}
-                                    </strong>
+                                    <strong onClick={() => onRoomSizeClick()}>{size}</strong>
                                 </p>
                             </SummaryCard>
                         </li>
@@ -169,7 +183,7 @@ function RoomDetail({ room: roomDetail }: Props) {
                     </Summary>
                 </RoomHeader>
                 <RoomContent>
-                    <RoomOptions>
+                    <Specification>
                         <dt>해당층/건물층</dt>
                         <dd>
                             {room.room_floor_str}/{room.building_floor_str}
@@ -226,9 +240,9 @@ function RoomDetail({ room: roomDetail }: Props) {
 
                         <dt>사용료 지불 옵션</dt>
                         <dd>{room.personal_maintenance_items_str.join(', ')}</dd>
-                    </RoomOptions>
+                    </Specification>
                     <div>
-                        <GalleryRows />
+                        <Gallery photos={photos} onClick={openLightbox} />
                         <ModalGateway>
                             {viewerIsOpen ? (
                                 <Modal onClose={closeLightbox}>
@@ -244,10 +258,37 @@ function RoomDetail({ room: roomDetail }: Props) {
                             ) : null}
                         </ModalGateway>
                     </div>
+                    <RoomContext>
+                        {/* 소개 */}
+                        <div className='room-title'>{room.title}</div>
+                        <div className='room-text'>{room.memo}</div>
+                    </RoomContext>
+                    <div>
+                        {/* 가격정보, 옵션, 위치 및 주변시설, 이 중개사무소의 다른 방 */}
+                        <ul>
+                            <li>가격정보</li>
+                            <li>옵션</li>
+                            <li>위치 및 주변시설</li>
+                            <li>이 중개사무소의 다른 방</li>
+                        </ul>
+                        <div>
+                            <h3>가격 정보</h3>
+                            <div>
+                                <dl>
+                                    <dt>한 달 예상 주거비용</dt>
+                                    <dd>
+                                        {room.month_total_cost_str} ({room.month_total_str})
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <RoomOptionFrame title={'옵션'} options={room.room_options} />
+                        <RoomOptionFrame title={'보안 / 안전시설'} options={room.safeties} />
+                    </div>
                 </RoomContent>
             </CenterLayout>
         </>
     );
 }
 
-export default RoomDetail;
+export default React.memo(RoomDetail);
