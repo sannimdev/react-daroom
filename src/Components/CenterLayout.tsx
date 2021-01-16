@@ -13,7 +13,7 @@ const Wrapper = styled.div<{ width: string }>`
     letter-spacing: -0.05rem;
 `;
 
-function CenterLayout({ width = '900px', children }: Props) {
+function CenterLayout({ width = '1240px', children }: Props) {
     return <Wrapper width={width}>{children}</Wrapper>;
 }
 

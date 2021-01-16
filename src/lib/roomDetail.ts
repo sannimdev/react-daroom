@@ -1,5 +1,5 @@
 import { Room as OtherRoom } from './roomList';
-import room from '../sample/room.json';
+import room from '../sample/room__.json';
 
 export type Agent = {
     id: string;
