@@ -5,7 +5,7 @@ import styled from 'styled-components';
 const BarLayout = styled.div`
     box-sizing: border-box;
     width: 100%;
-    max-width: 1660px;
+    min-width: 1660px;
     height: 70px;
     margin: 0 auto;
     line-height: 70px;
