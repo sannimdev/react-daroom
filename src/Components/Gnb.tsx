@@ -1,6 +1,7 @@
 import React from 'react';
 import daroom from '../Daroom.svg';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const BarLayout = styled.div`
     box-sizing: border-box;
@@ -23,18 +24,27 @@ const BarLayout = styled.div`
         margin: 0 2rem;
     }
 
-    & > h1 > img {
+    & > h1 img {
         height: 20px;
     }
+`;
+
+const LinkTo = styled(Link)`
+    color: inherit;
+    text-decoration: none;
 `;
 
 function Gnb() {
     return (
         <BarLayout>
             <h1>
-                <img src={daroom} />
+                <LinkTo to={'/'}>
+                    <img src={daroom} />
+                </LinkTo>
             </h1>
-            <h2>매물 정보</h2>
+            <h2>
+                <LinkTo to={'/'}>매물 정보</LinkTo>
+            </h2>
         </BarLayout>
     );
 }

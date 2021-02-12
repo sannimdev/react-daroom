@@ -1,5 +1,5 @@
 import { Room as OtherRoom } from './roomList';
-import room from '../sample/room__.json';
+import room from '../sample/room.json';
 
 export type Agent = {
     id: string;
@@ -7,7 +7,7 @@ export type Agent = {
     name: string;
     facename: string;
     address: string;
-    location: number[]; // [0, 0]
+    location: number[] | null; // [0, 0]
     reg_id: string;
     business_id: string;
     saved_time: string;
@@ -16,7 +16,7 @@ export type Agent = {
     user_name: string;
     user_phone: string;
     user_safe_phone: string;
-    user_tel: string;
+    user_tel: string | null;
     users_idx: number;
     sub_emails: null;
     is_premium: boolean;
@@ -46,7 +46,7 @@ export type Room = {
     room_type: number;
     maintenance_option: number;
     room_size: number;
-    provision_size: number;
+    provision_size: number | null;
     pano: null;
     moving_date: string | null;
     card: boolean;
@@ -67,8 +67,8 @@ export type Room = {
     complex_id: string | null;
     dong: string | null;
     ho: string | null;
-    contract_size: null;
-    enter_date: string | null;
+    contract_size: number | null;
+    enter_date: number | string | null;
     saved_time_str: string;
     is_lately: boolean;
     lately_time_str: string | null;
@@ -106,7 +106,20 @@ export type Room = {
     month_total_str: string; // '월세 + 관리비';
     month_total_cost_str: string; // '53만 원';
     building_use: null;
-    deungbon_summary: null;
+    deungbon_summary: {
+        detailScore: string;
+        regCommentTagMapList:
+            | {
+                  lawyerCmmntTagCode?: string | null;
+                  lawyer_comment_tag_name?: string | null;
+                  lawyer_comment_tag_context?: string | null;
+              }[]
+            | null;
+        grade: number;
+        grade_message: string;
+        report_url: null;
+        report_date: string;
+    } | null;
     beds_num: number;
     bath_num: number;
     show_watermark: boolean; /////////
@@ -129,11 +142,13 @@ export type Room = {
     is_toggle_detail_address: boolean; // true;
     is_bubble_cluster_map: boolean; //  false;
     is_new_construction: boolean; // false;
-    room_options: {
-        seq: number; // 0;
-        name: string; //'에어컨';
-    }[];
-    safeties: any[] | null;
+    room_options: RoomOption[] | null;
+    safeties: RoomOption[] | null;
+};
+
+export type RoomOption = {
+    seq: number;
+    name: string;
 };
 
 type User = {
@@ -141,12 +156,12 @@ type User = {
     email: string; // 'user@example.com';
     name: string; // '홍길동';
     active: boolean; // true;
-    inquery_phone: null;
+    inquery_phone: string | null;
     phone: string; // '01000000000';
     tel: string | null; // '02-0000-0000';
     safe_phone: string | null; // '05000000000';
     yellow_id?: null;
-    is_subscribe?: null;
+    is_subscribe: boolean | null;
     position?: null;
     profile_url: string; // 'https://링크';
     message: string; // '[매물번호:012030123] 이거 보고 연락드립니다. http://링크L';

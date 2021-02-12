@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import CenterLayout from './CenterLayout';
+import CenterLayout from '../Components/CenterLayout';
 import { Room, Rooms } from '../lib/roomList';
-import Gnb from './Gnb';
+import Gnb from '../Components/Gnb';
+import { Link } from 'react-router-dom';
 
 //styled-components 영역
 // const Title = styled.h1`
@@ -86,6 +87,11 @@ const GridItem = styled.div`
     }
 `;
 
+const LinkTo = styled(Link)`
+    text-decoration: none;
+    color: inherit;
+`;
+
 // 컴포넌트 영역
 type RoomItemProps = {
     room: Room;
@@ -94,16 +100,18 @@ function RoomItem({ room }: RoomItemProps) {
     const { title, img_url, price_title } = room;
     const [deposit, monthly] = price_title.split('/') || '?/?';
     return (
-        <GridItem>
-            <Thumbnail src={img_url} />
-            <ItemTitle>
-                보증금 <strong className='depositPrice'>{deposit}</strong>
-                월세 <strong className='monthlyPrice'>{monthly}</strong>
-            </ItemTitle>
-            <ItemContent>
-                <p>{title}</p>
-            </ItemContent>
-        </GridItem>
+        <LinkTo to={`detail/${room.id}`}>
+            <GridItem>
+                <Thumbnail src={img_url} />
+                <ItemTitle>
+                    보증금 <strong className='depositPrice'>{deposit}</strong>
+                    월세 <strong className='monthlyPrice'>{monthly}</strong>
+                </ItemTitle>
+                <ItemContent>
+                    <p>{title}</p>
+                </ItemContent>
+            </GridItem>
+        </LinkTo>
     );
 }
 
